@@ -3,6 +3,7 @@ from core.capture import CameraStream
 from core.detector import HandDetector
 from core.classifier import classify_gesture
 from core.debounce import GestureDebouncer
+from core.swipe import SwipeDetector
 from core.actions import execute_binding
 from core.config_loader import load_config
 
@@ -14,6 +15,7 @@ def run(show_debug_window=False):
         hold_frames = cfg["hold_frames_required"],
         cooldown = cfg["cooldown_seconds"]
     )
+    swipe_detector = SwipeDetector(cooldown=cfg["cooldown_seconds"], debug=True)
 
     running = True
 
@@ -23,9 +25,17 @@ def run(show_debug_window=False):
             time.sleep(0.05)
             continue
 
-        landmarks, frame = detector.find_hands(frame, draw=show_debug_window)
-        gesture = classify_gesture(landmarks) if landmarks else "NONE"
+        landmarks, frame, handedness = detector.find_hands(frame, draw=show_debug_window)
 
+        # SWIPE_RIGHT is a one-shot motion event, not a held pose, so it
+        # can't go through the hold-frames debouncer (which requires the
+        # same gesture to persist for several consecutive frames). It has
+        # its own internal cooldown instead and fires immediately.
+        swipe = swipe_detector.update(landmarks)
+        if swipe and swipe in cfg["bindings"]:
+            execute_binding(cfg["bindings"][swipe])
+
+        gesture = classify_gesture(landmarks, handedness) if landmarks else "NONE"
         confirmed = debouncer.update(gesture)
         if confirmed and confirmed in cfg["bindings"]:
             execute_binding(cfg["bindings"][confirmed])

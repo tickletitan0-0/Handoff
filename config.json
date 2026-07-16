@@ -3,10 +3,8 @@
     "cooldown_seconds":2.0,
     "hold_frames_required":6,
     "bindings":{
-        "OPEN_PALM": {"type":"folder", "target": "C:\\Users\\You\\Documents\\Vault\\Projects"},
-        "FIST": {"type":"app", "target": "notepad.exe"},
-        "PEACE": {"type":"folder", "target": "C:\\Users\\You\\Downloads"},
-        "THUMBS_UP": {"type":"command", "target": "start chrome https://github.com"},
-        "SWIPE_RIGHT": {"type":"app", "target": "C:\\Program Files\\VS Code\\Code.exe"}
+        "ONE": {"type":"folder", "target": "C:\\Users\\roope\\OneDrive\\Documents\\VAULT\\Projects"},
+        "TWO": {"type":"command", "target": "start chrome https://github.com"},
+        "FIVE": {"type":"app", "target": "C:\\Users\\roope\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"}
     }
 }
